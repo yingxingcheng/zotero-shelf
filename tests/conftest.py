@@ -71,7 +71,7 @@ def api_transport():
             return httpx2.Response(
                 200,
                 headers=headers,
-                json=[{"id": "ABCD1234", "type": "article-journal", "title": "Example"}],
+                json={"items": [{"id": "ABCD1234", "type": "article-journal", "title": "Example"}]},
             )
         if path.endswith("/fulltext"):
             result = {"content": "Indexed example PDF text", "indexedPages": 2, "totalPages": 2}

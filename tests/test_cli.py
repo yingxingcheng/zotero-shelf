@@ -81,3 +81,25 @@ def test_pdf_text_missing_poppler_is_actionable(monkeypatch):
     monkeypatch.setattr(cli.shutil, "which", lambda _: None)
     with pytest.raises(ShelfError, match="pdftotext"):
         cli._pdf_text(Path("example.pdf"))
+
+
+@pytest.mark.parametrize("json_mode", [False, True])
+def test_csl_export_prints_an_array_of_citations(connected_cli, capsys, json_mode):
+    args = [*connected_cli, "export", "ABCD1234", "--format", "csljson"]
+    if json_mode:
+        args.append("--json")
+    assert cli.main(args) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert isinstance(result, list)
+    assert result[0]["type"] == "article-journal"
+
+
+def test_csl_export_saves_an_array_of_citations(connected_cli, tmp_path, capsys):
+    output = tmp_path / "citations.json"
+    assert (
+        cli.main([*connected_cli, "export", "ABCD1234", "--format", "csljson", "-o", str(output)])
+        == 0
+    )
+    result = json.loads(output.read_text(encoding="utf-8"))
+    assert isinstance(result, list)
+    assert result[0]["type"] == "article-journal"

@@ -73,7 +73,7 @@ class WebDAV:
             auth=auth_type(settings["username"], settings["password"]),
             timeout=httpx2.Timeout(90, connect=20),
             follow_redirects=False,
-            headers={"User-Agent": "Zotero-Shelf/0.1.0"},
+            headers={"User-Agent": "Zotero-Shelf/0.1.1"},
             transport=transport,
         )
 

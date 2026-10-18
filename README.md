@@ -147,6 +147,8 @@ git clone https://github.com/yingxingcheng/zotero-shelf.git
 cd zotero-shelf
 python -m pip install -e '.[dev]'
 pytest
+coverage run --branch --source=zotero_shelf -m pytest
+coverage report -m
 ruff check .
 ruff format --check .
 python -m build
@@ -154,8 +156,11 @@ twine check dist/*
 ```
 
 Tests use synthetic records and local HTTP fixtures. They require no Zotero
-account and never upload or modify library data. See [contributing](CONTRIBUTING.md)
-and [security](SECURITY.md).
+account and never upload or modify library data. CI measures coverage and runs
+these offline tests on Linux, macOS and Windows. Passing CI does not verify a real
+account, every WebDAV provider or every code path. Live checks need separately
+configured accounts; keep their credentials and output outside the repository.
+See [contributing](CONTRIBUTING.md) and [security](SECURITY.md).
 
 ## License and acknowledgements
 

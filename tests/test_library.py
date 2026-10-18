@@ -52,6 +52,23 @@ def test_api_write_is_blocked_before_transport(settings):
     assert requests == []
 
 
+@pytest.mark.parametrize("wrapped", [True, False])
+def test_csl_export_normalizes_api_response(settings, wrapped):
+    citations = [{"id": "ABCD1234", "type": "article-journal", "title": "Example"}]
+    payload = {"items": citations} if wrapped else citations
+    transport = httpx2.MockTransport(lambda request: httpx2.Response(200, json=payload))
+    with Library(settings, transport) as library:
+        assert library.export(["ABCD1234"], "csljson") == citations
+
+
+@pytest.mark.parametrize("payload", [{"unexpected": []}, {"items": "bad"}, ["not a citation"]])
+def test_csl_export_rejects_unexpected_response(settings, payload):
+    transport = httpx2.MockTransport(lambda request: httpx2.Response(200, json=payload))
+    with Library(settings, transport) as library:
+        with pytest.raises(ShelfError, match="unexpected CSL JSON"):
+            library.export(["ABCD1234"], "csljson")
+
+
 @pytest.mark.parametrize("key", ["../../x", "TOO-LONG-KEY", "", "é1234567"])
 def test_invalid_keys_are_rejected(key):
     with pytest.raises(ShelfError):

@@ -116,6 +116,13 @@ class Library:
             import bibtexparser
 
             return bibtexparser.dumps(result)
+        if format == "csljson":
+            # The live API export uses {"items": [...]}; normalize it for files,
+            # JSON output and the terminal. Some transports already return a list.
+            if isinstance(result, dict):
+                result = result.get("items")
+            if not isinstance(result, list) or not all(isinstance(item, dict) for item in result):
+                raise ShelfError("Zotero returned an unexpected CSL JSON export response.")
         return result
 
 

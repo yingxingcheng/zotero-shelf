@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Fix CSL JSON export from the live API: unwrap its `items` object to return a
+  citation array in terminal output, JSON output and saved files.
+- Correct the API test fixture and add regression checks for CSL JSON exports.
+- Report statement and branch coverage in continuous integration.
+
 ## 0.1.0
 
 - Installable Python package with `zshelf` and `zotero-shelf` commands.
